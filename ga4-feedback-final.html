@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Feedback Form | Krish TechnoLabs</title>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal:      #6EC1B6;
+    --teal-dark: #4FA89C;
+    --teal-glow: rgba(110,193,182,0.15);
+    --teal-soft: #E6F6F5;
+    --black:     #000000;
+    --bg:        #F3F3F3;
+    --gray:      #737572;
+    --gray-lt:   #DDDEDD;
+    --gray-soft: #EBEBEB;
+    --white:     #FFFFFF;
+    --text:      #1A1A1A;
+    --serif: 'PT Serif', Georgia, serif;
+    --sans:  'Poppins', sans-serif;
+    --r: 10px; --rl: 16px;
+    --ease: 0.22s ease;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 200; background: var(--black); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-sq { width: 34px; height: 34px; background: var(--teal); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+  .nav-logo-sq svg { width: 19px; height: 19px; fill: var(--black); }
+  .nav-brand { font-family: var(--serif); font-size: 16px; color: var(--white); }
+  .nav-brand b { color: var(--teal); font-weight: 700; }
+  .nav-tag { font-size: 10px; color: var(--gray); font-weight: 300; letter-spacing: 0.04em; }
+  .nav-right { font-size: 12px; color: var(--gray); font-weight: 300; }
+
+  /* HERO */
+  .hero { background: var(--black); padding: 72px 48px 84px; position: relative; overflow: hidden; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(110,193,182,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110,193,182,0.05) 1px, transparent 1px); background-size: 52px 52px; }
+  .hero-blob { position: absolute; top: -100px; right: -80px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(110,193,182,0.2) 0%, transparent 65%); pointer-events: none; }
+  .hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(110,193,182,0.35); background: rgba(110,193,182,0.07); border-radius: 30px; padding: 5px 15px; margin-bottom: 28px; }
+  .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .hero-badge span { font-size: 11px; font-weight: 500; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; }
+  .hero h1 { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); font-weight: 700; color: var(--white); line-height: 1.18; margin-bottom: 18px; }
+  .hero h1 em { font-style: italic; color: var(--teal); }
+  .hero-desc { font-size: 14px; color: rgba(255,255,255,0.55); max-width: 560px; line-height: 1.9; margin-bottom: 40px; font-weight: 300; }
+  .hero-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: var(--r); padding: 12px 20px; display: flex; flex-direction: column; gap: 2px; }
+  .hero-stat-val { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--teal); }
+  .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.35); font-weight: 300; }
+
+  /* PROGRESS */
+  .pbar-wrap { position: sticky; top: 64px; z-index: 100; background: var(--white); border-bottom: 1px solid var(--gray-lt); }
+  .pbar-inner { max-width: 880px; margin: 0 auto; display: flex; align-items: center; gap: 14px; height: 50px; padding: 0 24px; }
+  .pbar-lbl { font-size: 12px; color: var(--gray); white-space: nowrap; font-weight: 300; }
+  .pbar-steps { display: flex; gap: 3px; flex: 1; }
+  .pbar-step { flex: 1; height: 4px; border-radius: 2px; background: var(--gray-lt); transition: background 0.3s ease; }
+  .pbar-step.done { background: var(--teal); }
+  .pbar-step.next { background: rgba(110,193,182,0.35); }
+  .pbar-pct { font-size: 13px; font-weight: 600; color: var(--teal); min-width: 42px; text-align: right; }
+
+  /* MAIN */
+  .main { max-width: 880px; margin: 0 auto; padding: 42px 24px 80px; }
+
+  /* CARD */
+  .card { background: var(--white); border-radius: var(--rl); box-shadow: 0 2px 14px rgba(0,0,0,0.055); padding: 32px 36px; margin-bottom: 20px; border-left: 4px solid transparent; transition: border-color var(--ease), box-shadow var(--ease), transform var(--ease); scroll-margin-top: 120px; }
+  .card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .card:focus-within { border-left-color: var(--teal); box-shadow: 0 4px 24px rgba(110,193,182,0.15); transform: translateY(-1px); }
+  .card.complete { border-left-color: var(--teal); }
+  .card-hd { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--gray-soft); }
+  .card-num { width: 34px; height: 34px; border-radius: 7px; background: var(--black); color: var(--white); font-family: var(--serif); font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background var(--ease), color var(--ease); }
+  .card.complete .card-num { background: var(--teal); color: var(--black); }
+  .card-num .nd { transition: opacity 0.2s; }
+  .card-num .nc { display: none; }
+  .card.complete .card-num .nd { display: none; }
+  .card.complete .card-num .nc { display: block; }
+  .card-hd-text h2 { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--black); margin-bottom: 3px; }
+  .card-hd-text p { font-size: 13px; color: var(--gray); font-weight: 300; }
+
+  /* FIELDS */
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .fg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  label.lbl { display: block; font-size: 13px; font-weight: 500; color: var(--black); margin-bottom: 6px; }
+  .req { color: var(--teal-dark); margin-left: 2px; }
+  .hint { font-size: 12px; color: var(--gray); margin-bottom: 8px; display: block; font-weight: 300; }
+  input[type=text], input[type=email] { width: 100%; padding: 10px 13px; font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg); border: 1.5px solid var(--gray-lt); border-radius: var(--r); outline: none; transition: border-color var(--ease), background var(--ease), box-shadow var(--ease); }
+  input:focus { border-color: var(--teal); background: var(--white); box-shadow: 0 0 0 3px var(--teal-glow); }
+  input:focus-visible { outline: none; }
+  input::placeholder { color: #BBBCBB; }
+  textarea { width: 100%; min-height: 86px; padding: 10px 13px; resize: vertical; font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--bg); border: 1.5px solid var(--gray-lt); border-radius: var(--r); outline: none; line-height: 1.65; transition: border-color var(--ease), background var(--ease), box-shadow var(--ease); }
+  textarea:focus { border-color: var(--teal); background: var(--white); box-shadow: 0 0 0 3px var(--teal-glow); }
+  textarea:focus-visible { outline: none; }
+  textarea::placeholder { color: #BBBCBB; }
+  .cc { font-size: 11px; color: var(--gray); text-align: right; margin-top: 3px; }
+
+  /* PILLS */
+  .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pill { padding: 7px 16px; border-radius: 30px; border: 1.5px solid var(--gray-lt); font-size: 13px; color: var(--gray); background: var(--white); cursor: pointer; transition: all var(--ease); user-select: none; }
+  .pill:hover { border-color: var(--teal); color: var(--teal-dark); background: var(--teal-soft); transform: translateY(-1px); }
+  .pill:active { transform: translateY(0); }
+  .pill.on { background: var(--black); border-color: var(--black); color: var(--white); font-weight: 500; transform: none; }
+
+  /* STARS */
+  .star-row { display: flex; align-items: center; gap: 10px; }
+  .stars { display: flex; gap: 4px; }
+  .star { font-size: 30px; cursor: pointer; color: var(--gray-lt); line-height: 1; user-select: none; transition: color 0.12s, transform 0.12s; }
+  .star:hover { transform: scale(1.18); }
+  .star.on { color: var(--teal); }
+  .star-lbl { font-size: 13px; color: var(--gray); min-width: 88px; font-weight: 300; }
+
+  /* RATING TABLE */
+  .rtable { width: 100%; border-collapse: collapse; }
+  .rtable tr { border-bottom: 1px solid var(--gray-soft); transition: background var(--ease); }
+  .rtable tr:hover { background: var(--bg); }
+  .rtable tr:last-child { border-bottom: none; }
+  .rtable td { padding: 12px 0; vertical-align: middle; }
+  .rtable td:first-child { font-size: 14px; color: var(--text); padding-right: 14px; }
+  .rtable td:last-child { text-align: right; white-space: nowrap; }
+  .mstars { display: inline-flex; gap: 3px; }
+  .ms { font-size: 22px; cursor: pointer; color: var(--gray-lt); line-height: 1; user-select: none; transition: color 0.1s, transform 0.1s; }
+  .ms:hover { transform: scale(1.14); }
+  .ms.on { color: var(--teal); }
+  .rv { font-size: 11px; color: var(--gray); margin-left: 6px; min-width: 28px; display: inline-block; text-align: right; font-weight: 300; }
+
+  /* TRAINER BOX */
+  .trainer-box { display: flex; align-items: center; gap: 14px; background: var(--bg); border: 1.5px solid var(--gray-lt); border-radius: var(--r); padding: 13px 16px; margin-bottom: 22px; transition: border-color var(--ease); }
+  .trainer-box:focus-within { border-color: var(--teal); }
+  .trainer-av { width: 44px; height: 44px; border-radius: 50%; background: var(--black); color: var(--white); font-family: var(--serif); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background var(--ease), color var(--ease); }
+  .trainer-box:focus-within .trainer-av { background: var(--teal); color: var(--black); }
+  .trainer-info { flex: 1; }
+  .trainer-info small { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray); font-weight: 500; display: block; margin-bottom: 3px; }
+  .trainer-info input { border: none; background: transparent; font-family: var(--sans); font-size: 15px; font-weight: 500; color: var(--black); width: 100%; outline: none; padding: 0; }
+  .trainer-info input::placeholder { color: #BBBCBB; font-weight: 300; }
+
+  /* NPS */
+  .nps-btns { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .nb { width: 50px; height: 44px; border-radius: var(--r); border: 1.5px solid var(--gray-lt); font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--gray); background: var(--white); cursor: pointer; position: relative; overflow: hidden; transition: border-color var(--ease), color var(--ease); }
+  .nb-fill { position: absolute; inset: 0; background: var(--teal); transform: scaleY(0); transform-origin: bottom; transition: transform 0.22s ease; }
+  .nb-txt { position: relative; z-index: 1; }
+  .nb:hover { border-color: var(--teal); color: var(--teal-dark); }
+  .nb.on { border-color: var(--teal); color: var(--black); font-weight: 600; }
+  .nb.on .nb-fill { transform: scaleY(1); }
+  .nps-ends { display: flex; justify-content: space-between; margin-top: 7px; }
+  .nps-end { font-size: 11px; color: var(--gray); font-weight: 300; }
+  .nps-caption { text-align: center; font-size: 13px; font-weight: 500; color: var(--teal-dark); margin-top: 10px; min-height: 20px; }
+
+  /* DIVIDER */
+  .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0 20px; }
+  .divider span { font-size: 11px; font-weight: 500; color: var(--gray); text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-soft); }
+
+  /* SUBMIT */
+  .submit-btn { width: 100%; padding: 16px; background: var(--teal); color: var(--black); font-family: var(--sans); font-size: 15px; font-weight: 600; border: none; border-radius: var(--r); cursor: pointer; letter-spacing: 0.03em; position: relative; overflow: hidden; box-shadow: 0 4px 18px rgba(110,193,182,0.32); transition: background var(--ease), transform 0.12s, box-shadow var(--ease), opacity var(--ease); }
+  .submit-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent); transition: left 0.5s; }
+  .submit-btn:hover { background: var(--teal-dark); color: var(--white); transform: translateY(-2px); box-shadow: 0 8px 26px rgba(110,193,182,0.4); }
+  .submit-btn:hover::before { left: 100%; }
+  .submit-btn:active { transform: translateY(1px); box-shadow: 0 2px 10px rgba(110,193,182,0.25); }
+  .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+  .submit-note { text-align: center; font-size: 12px; color: var(--gray); margin-top: 10px; font-weight: 300; letter-spacing: 0.01em; }
+
+  /* SUCCESS */
+  .success { background: var(--white); border-radius: var(--rl); padding: 72px 40px; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,0.07); border-top: 4px solid var(--teal); }
+  .s-ring { width: 76px; height: 76px; border-radius: 50%; border: 3px solid var(--teal); margin: 0 auto 26px; display: flex; align-items: center; justify-content: center; animation: pop 0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
+  @keyframes pop { 0%{transform:scale(0.3);opacity:0;} 100%{transform:scale(1);opacity:1;} }
+  .s-ring svg { width: 34px; height: 34px; stroke: var(--teal); }
+  .success h2 { font-family: var(--serif); font-size: 28px; color: var(--black); margin-bottom: 12px; }
+  .success p { font-size: 14px; color: var(--gray); max-width: 450px; margin: 0 auto; line-height: 1.85; font-weight: 300; }
+  .s-bar { width: 44px; height: 3px; background: var(--teal); margin: 22px auto; border-radius: 2px; }
+  .s-tag { font-size: 12px; color: var(--gray); font-weight: 300; }
+  .s-tag b { color: var(--black); font-weight: 500; }
+
+  /* FOOTER */
+  footer { background: var(--black); padding: 28px 48px; text-align: center; border-top: 3px solid var(--teal); }
+  .ft-name { font-family: var(--serif); font-size: 15px; color: rgba(255,255,255,0.45); margin-bottom: 5px; }
+  .ft-name b { color: var(--teal); font-weight: 700; }
+  .ft-sub { font-size: 12px; color: rgba(255,255,255,0.22); font-weight: 300; }
+
+  @media(max-width:640px){
+    nav { padding: 0 18px; } .hero { padding: 46px 18px 56px; }
+    .pbar-inner { padding: 0 18px; } .main { padding: 26px 12px 60px; }
+    .card { padding: 20px 16px; } .fg2 { grid-template-columns: 1fr; }
+    .nb { width: 42px; height: 40px; font-size: 13px; } footer { padding: 22px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-sq">
+      <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 3.5a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0z"/></svg>
+    </div>
+    <div>
+      <div class="nav-brand">Krish <b>TechnoLabs</b></div>
+      <div class="nav-tag">Training &amp; Enablement</div>
+    </div>
+  </a>
+  <div class="nav-right">Training Feedback Portal</div>
+</nav>
+
+<div class="pbar-wrap">
+  <div class="pbar-inner">
+    <span class="pbar-lbl" id="pbarLbl">0 of 6 sections done</span>
+    <div class="pbar-steps">
+      <div class="pbar-step" id="ps1"></div><div class="pbar-step" id="ps2"></div>
+      <div class="pbar-step" id="ps3"></div><div class="pbar-step" id="ps4"></div>
+      <div class="pbar-step" id="ps5"></div><div class="pbar-step" id="ps6"></div>
+    </div>
+    <span class="pbar-pct" id="pbarPct">0%</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="hero-dot"></div><span>Post-Training Feedback</span></div>
+    <h1>Share your<br><em>training experience</em></h1>
+    <p class="hero-desc">We've conducted a two-day GA4 training programme — Day 1 covering the Basics and Day 2 going into Advanced analytics. Your feedback shapes how we design and deliver future sessions. All responses are confidential.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">2</div><div class="hero-stat-lbl">Training Days</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">GA4</div><div class="hero-stat-lbl">Focus Platform</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">~5 min</div><div class="hero-stat-lbl">To complete</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">100%</div><div class="hero-stat-lbl">Confidential</div></div>
+    </div>
+  </div>
+</section>
+
+<main class="main" id="mainForm">
+
+  <!-- 1 — PARTICIPANT -->
+  <div class="card reveal" id="card1">
+    <div class="card-hd">
+      <div class="card-num"><span class="nd">1</span><span class="nc">✓</span></div>
+      <div class="card-hd-text"><h2>Participant Details</h2><p>Tell us a little about yourself so we can contextualise your feedback.</p></div>
+    </div>
+    <div class="fg2">
+      <div class="field"><label class="lbl">Full Name <span class="req">*</span></label><input type="text" id="pName" placeholder="Your full name" oninput="sync()"></div>
+      <div class="field"><label class="lbl">Organisation</label><input type="text" placeholder="Company / team name"></div>
+      <div class="field"><label class="lbl">Email Address</label><input type="email" placeholder="Optional — for follow-up"></div>
+      <div class="field"><label class="lbl">Your Role</label><input type="text" placeholder="e.g. Digital Marketing Manager"></div>
+    </div>
+    <div class="field" style="margin-top:16px;">
+      <label class="lbl">Which session(s) did you attend? <span class="req">*</span></label>
+      <div class="pills" id="sessionG">
+        <div class="pill" onclick="pick('sessionG',this)">Day 1 — Basic GA4</div>
+        <div class="pill" onclick="pick('sessionG',this)">Day 2 — Advanced GA4</div>
+        <div class="pill" onclick="pick('sessionG',this)">Both Days</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 — OVERALL -->
+  <div class="card reveal" id="card2" style="transition-delay:.07s">
+    <div class="card-hd">
+      <div class="card-num"><span class="nd">2</span><span class="nc">✓</span></div>
+      <div class="card-hd-text"><h2>Overall Experience</h2><p>Your general impression of the training programme.</p></div>
+    </div>
+    <div class="field">
+      <label class="lbl">Overall Satisfaction <span class="req">*</span></label>
+      <span class="hint">Rate your overall experience across the session(s) you attended</span>
+      <div class="star-row">
+        <div class="stars" id="oStars" data-v="0">
+          <span class="star" onclick="setStar('oStars',1)" onmouseover="hvStar('oStars',1)" onmouseout="outStar('oStars')">★</span>
+          <span class="star" onclick="setStar('oStars',2)" onmouseover="hvStar('oStars',2)" onmouseout="outStar('oStars')">★</span>
+          <span class="star" onclick="setStar('oStars',3)" onmouseover="hvStar('oStars',3)" onmouseout="outStar('oStars')">★</span>
+          <span class="star" onclick="setStar('oStars',4)" onmouseover="hvStar('oStars',4)" onmouseout="outStar('oStars')">★</span>
+          <span class="star" onclick="setStar('oStars',5)" onmouseover="hvStar('oStars',5)" onmouseout="outStar('oStars')">★</span>
+        </div>
+        <span class="star-lbl" id="oStarsLbl">Tap to rate</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="lbl">Did the training meet your expectations? <span class="req">*</span></label>
+      <div class="pills" id="expectG">
+        <div class="pill" onclick="pick('expectG',this)">Exceeded expectations</div>
+        <div class="pill" onclick="pick('expectG',this)">Met expectations</div>
+        <div class="pill" onclick="pick('expectG',this)">Partially met</div>
+        <div class="pill" onclick="pick('expectG',this)">Did not meet</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="lbl">How would you rate the pace?</label>
+      <div class="pills" id="paceG">
+        <div class="pill" onclick="pick('paceG',this)">Too slow</div>
+        <div class="pill" onclick="pick('paceG',this)">Just right</div>
+        <div class="pill" onclick="pick('paceG',this)">Slightly fast</div>
+        <div class="pill" onclick="pick('paceG',this)">Too fast</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 — CONTENT -->
+  <div class="card reveal" id="card3" style="transition-delay:.13s">
+    <div class="card-hd">
+      <div class="card-num"><span class="nd">3</span><span class="nc">✓</span></div>
+      <div class="card-hd-text"><h2>Training Content</h2><p>Help us evaluate the quality and relevance of what was covered.</p></div>
+    </div>
+    <table class="rtable">
+      <tr><td>Relevance to my role / day-to-day work</td><td><div class="mstars" id="c1" data-v="0"><span class="ms" onclick="setMS('c1',1)" onmouseover="hvMS('c1',1)" onmouseout="outMS('c1')">★</span><span class="ms" onclick="setMS('c1',2)" onmouseover="hvMS('c1',2)" onmouseout="outMS('c1')">★</span><span class="ms" onclick="setMS('c1',3)" onmouseover="hvMS('c1',3)" onmouseout="outMS('c1')">★</span><span class="ms" onclick="setMS('c1',4)" onmouseover="hvMS('c1',4)" onmouseout="outMS('c1')">★</span><span class="ms" onclick="setMS('c1',5)" onmouseover="hvMS('c1',5)" onmouseout="outMS('c1')">★</span></div><span class="rv" id="rv_c1"></span></td></tr>
+      <tr><td>Clarity and depth of content covered</td><td><div class="mstars" id="c2" data-v="0"><span class="ms" onclick="setMS('c2',1)" onmouseover="hvMS('c2',1)" onmouseout="outMS('c2')">★</span><span class="ms" onclick="setMS('c2',2)" onmouseover="hvMS('c2',2)" onmouseout="outMS('c2')">★</span><span class="ms" onclick="setMS('c2',3)" onmouseover="hvMS('c2',3)" onmouseout="outMS('c2')">★</span><span class="ms" onclick="setMS('c2',4)" onmouseover="hvMS('c2',4)" onmouseout="outMS('c2')">★</span><span class="ms" onclick="setMS('c2',5)" onmouseover="hvMS('c2',5)" onmouseout="outMS('c2')">★</span></div><span class="rv" id="rv_c2"></span></td></tr>
+      <tr><td>Quality of training materials and slides</td><td><div class="mstars" id="c3" data-v="0"><span class="ms" onclick="setMS('c3',1)" onmouseover="hvMS('c3',1)" onmouseout="outMS('c3')">★</span><span class="ms" onclick="setMS('c3',2)" onmouseover="hvMS('c3',2)" onmouseout="outMS('c3')">★</span><span class="ms" onclick="setMS('c3',3)" onmouseover="hvMS('c3',3)" onmouseout="outMS('c3')">★</span><span class="ms" onclick="setMS('c3',4)" onmouseover="hvMS('c3',4)" onmouseout="outMS('c3')">★</span><span class="ms" onclick="setMS('c3',5)" onmouseover="hvMS('c3',5)" onmouseout="outMS('c3')">★</span></div><span class="rv" id="rv_c3"></span></td></tr>
+      <tr><td>Practical exercises and real-world examples</td><td><div class="mstars" id="c4" data-v="0"><span class="ms" onclick="setMS('c4',1)" onmouseover="hvMS('c4',1)" onmouseout="outMS('c4')">★</span><span class="ms" onclick="setMS('c4',2)" onmouseover="hvMS('c4',2)" onmouseout="outMS('c4')">★</span><span class="ms" onclick="setMS('c4',3)" onmouseover="hvMS('c4',3)" onmouseout="outMS('c4')">★</span><span class="ms" onclick="setMS('c4',4)" onmouseover="hvMS('c4',4)" onmouseout="outMS('c4')">★</span><span class="ms" onclick="setMS('c4',5)" onmouseover="hvMS('c4',5)" onmouseout="outMS('c4')">★</span></div><span class="rv" id="rv_c4"></span></td></tr>
+      <tr><td>Balance between Basic (Day 1) and Advanced (Day 2)</td><td><div class="mstars" id="c5" data-v="0"><span class="ms" onclick="setMS('c5',1)" onmouseover="hvMS('c5',1)" onmouseout="outMS('c5')">★</span><span class="ms" onclick="setMS('c5',2)" onmouseover="hvMS('c5',2)" onmouseout="outMS('c5')">★</span><span class="ms" onclick="setMS('c5',3)" onmouseover="hvMS('c5',3)" onmouseout="outMS('c5')">★</span><span class="ms" onclick="setMS('c5',4)" onmouseover="hvMS('c5',4)" onmouseout="outMS('c5')">★</span><span class="ms" onclick="setMS('c5',5)" onmouseover="hvMS('c5',5)" onmouseout="outMS('c5')">★</span></div><span class="rv" id="rv_c5"></span></td></tr>
+      <tr><td>Time allocated per topic</td><td><div class="mstars" id="c6" data-v="0"><span class="ms" onclick="setMS('c6',1)" onmouseover="hvMS('c6',1)" onmouseout="outMS('c6')">★</span><span class="ms" onclick="setMS('c6',2)" onmouseover="hvMS('c6',2)" onmouseout="outMS('c6')">★</span><span class="ms" onclick="setMS('c6',3)" onmouseover="hvMS('c6',3)" onmouseout="outMS('c6')">★</span><span class="ms" onclick="setMS('c6',4)" onmouseover="hvMS('c6',4)" onmouseout="outMS('c6')">★</span><span class="ms" onclick="setMS('c6',5)" onmouseover="hvMS('c6',5)" onmouseout="outMS('c6')">★</span></div><span class="rv" id="rv_c6"></span></td></tr>
+    </table>
+    <div class="divider"><span>Written comments on content</span></div>
+    <div class="field"><label class="lbl">What topics were most valuable to you?</label><textarea id="tv" placeholder="e.g. Event tracking setup, Conversion goals, Explorations reports…" oninput="cc(this,'cc1');sync()"></textarea><div class="cc" id="cc1">0 characters</div></div>
+    <div class="field"><label class="lbl">Were any topics unclear or need more depth?</label><textarea placeholder="e.g. The attribution models section felt too brief…" oninput="cc(this,'cc2')"></textarea><div class="cc" id="cc2">0 characters</div></div>
+    <div class="field"><label class="lbl">Is there anything you expected to cover that we missed?</label><textarea placeholder="Suggest topics for future sessions…" oninput="cc(this,'cc3')"></textarea><div class="cc" id="cc3">0 characters</div></div>
+  </div>
+
+  <!-- 4 — TRAINER -->
+  <div class="card reveal" id="card4" style="transition-delay:.18s">
+    <div class="card-hd">
+      <div class="card-num"><span class="nd">4</span><span class="nc">✓</span></div>
+      <div class="card-hd-text"><h2>Trainer Feedback</h2><p>Share how the trainer performed in delivering the sessions.</p></div>
+    </div>
+    <div class="trainer-box">
+      <div class="trainer-av" id="tAv">?</div>
+      <div class="trainer-info">
+        <small>Trainer's Name</small>
+        <input type="text" id="tName" placeholder="Enter trainer's full name" oninput="updateAvatar(this.value)">
+      </div>
+    </div>
+    <table class="rtable">
+      <tr><td>Subject knowledge and expertise</td><td><div class="mstars" id="t1" data-v="0"><span class="ms" onclick="setMS('t1',1)" onmouseover="hvMS('t1',1)" onmouseout="outMS('t1')">★</span><span class="ms" onclick="setMS('t1',2)" onmouseover="hvMS('t1',2)" onmouseout="outMS('t1')">★</span><span class="ms" onclick="setMS('t1',3)" onmouseover="hvMS('t1',3)" onmouseout="outMS('t1')">★</span><span class="ms" onclick="setMS('t1',4)" onmouseover="hvMS('t1',4)" onmouseout="outMS('t1')">★</span><span class="ms" onclick="setMS('t1',5)" onmouseover="hvMS('t1',5)" onmouseout="outMS('t1')">★</span></div><span class="rv" id="rv_t1"></span></td></tr>
+      <tr><td>Ability to explain complex concepts simply</td><td><div class="mstars" id="t2" data-v="0"><span class="ms" onclick="setMS('t2',1)" onmouseover="hvMS('t2',1)" onmouseout="outMS('t2')">★</span><span class="ms" onclick="setMS('t2',2)" onmouseover="hvMS('t2',2)" onmouseout="outMS('t2')">★</span><span class="ms" onclick="setMS('t2',3)" onmouseover="hvMS('t2',3)" onmouseout="outMS('t2')">★</span><span class="ms" onclick="setMS('t2',4)" onmouseover="hvMS('t2',4)" onmouseout="outMS('t2')">★</span><span class="ms" onclick="setMS('t2',5)" onmouseover="hvMS('t2',5)" onmouseout="outMS('t2')">★</span></div><span class="rv" id="rv_t2"></span></td></tr>
+      <tr><td>Engagement, energy and delivery style</td><td><div class="mstars" id="t3" data-v="0"><span class="ms" onclick="setMS('t3',1)" onmouseover="hvMS('t3',1)" onmouseout="outMS('t3')">★</span><span class="ms" onclick="setMS('t3',2)" onmouseover="hvMS('t3',2)" onmouseout="outMS('t3')">★</span><span class="ms" onclick="setMS('t3',3)" onmouseover="hvMS('t3',3)" onmouseout="outMS('t3')">★</span><span class="ms" onclick="setMS('t3',4)" onmouseover="hvMS('t3',4)" onmouseout="outMS('t3')">★</span><span class="ms" onclick="setMS('t3',5)" onmouseover="hvMS('t3',5)" onmouseout="outMS('t3')">★</span></div><span class="rv" id="rv_t3"></span></td></tr>
+      <tr><td>Handling questions during the session</td><td><div class="mstars" id="t4" data-v="0"><span class="ms" onclick="setMS('t4',1)" onmouseover="hvMS('t4',1)" onmouseout="outMS('t4')">★</span><span class="ms" onclick="setMS('t4',2)" onmouseover="hvMS('t4',2)" onmouseout="outMS('t4')">★</span><span class="ms" onclick="setMS('t4',3)" onmouseover="hvMS('t4',3)" onmouseout="outMS('t4')">★</span><span class="ms" onclick="setMS('t4',4)" onmouseover="hvMS('t4',4)" onmouseout="outMS('t4')">★</span><span class="ms" onclick="setMS('t4',5)" onmouseover="hvMS('t4',5)" onmouseout="outMS('t4')">★</span></div><span class="rv" id="rv_t4"></span></td></tr>
+      <tr><td>Adapting to participant needs and level</td><td><div class="mstars" id="t5" data-v="0"><span class="ms" onclick="setMS('t5',1)" onmouseover="hvMS('t5',1)" onmouseout="outMS('t5')">★</span><span class="ms" onclick="setMS('t5',2)" onmouseover="hvMS('t5',2)" onmouseout="outMS('t5')">★</span><span class="ms" onclick="setMS('t5',3)" onmouseover="hvMS('t5',3)" onmouseout="outMS('t5')">★</span><span class="ms" onclick="setMS('t5',4)" onmouseover="hvMS('t5',4)" onmouseout="outMS('t5')">★</span><span class="ms" onclick="setMS('t5',5)" onmouseover="hvMS('t5',5)" onmouseout="outMS('t5')">★</span></div><span class="rv" id="rv_t5"></span></td></tr>
+    </table>
+    <div class="divider"><span>Written comments on trainer</span></div>
+    <div class="field"><label class="lbl">What did the trainer do particularly well?</label><textarea placeholder="Share specific moments, examples, or qualities you appreciated…" oninput="cc(this,'cc4')"></textarea><div class="cc" id="cc4">0 characters</div></div>
+    <div class="field"><label class="lbl">Any suggestions for the trainer to improve future sessions?</label><textarea placeholder="Constructive feedback is always welcome and appreciated…" oninput="cc(this,'cc5')"></textarea><div class="cc" id="cc5">0 characters</div></div>
+  </div>
+
+  <!-- 5 — OUTCOMES -->
+  <div class="card reveal" id="card5" style="transition-delay:.22s">
+    <div class="card-hd">
+      <div class="card-num"><span class="nd">5</span><span class="nc">✓</span></div>
+      <div class="card-hd-text"><h2>Learning Outcomes</h2><p>Assess how the training translates into practical confidence and next steps.</p></div>
+    </div>
+    <div class="field">
+      <label class="lbl">How confident are you in using GA4 after this training? <span class="req">*</span></label>
+      <div class="pills" id="confG">
+        <div class="pill" onclick="pick('confG',this)">Very confident</div>
+        <div class="pill" onclick="pick('confG',this)">Fairly confident</div>
+        <div class="pill" onclick="pick('confG',this)">Somewhat confident</div>
+        <div class="pill" onclick="pick('confG',this)">Not yet confident</div>
+      </div>
+    </div>
+    <div class="field"><label class="lbl">What will you implement or try first after this training?</label><textarea placeholder="e.g. Set up custom events, build an Exploration report, configure conversions…" oninput="cc(this,'cc6')"></textarea><div class="cc" id="cc6">0 characters</div></div>
+    <div class="field">
+      <label class="lbl">Would you be interested in follow-up or advanced sessions?</label>
+      <div class="pills" id="followG">
+        <div class="pill" onclick="pick('followG',this)">Yes, definitely</div>
+        <div class="pill" onclick="pick('followG',this)">Maybe</div>
+        <div class="pill" onclick="pick('followG',this)">No, I'm all set</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 — NPS -->
+  <div class="card reveal" id="card6" style="transition-delay:.27s">
+    <div class="card-hd">
+      <div class="card-num"><span class="nd">6</span><span class="nc">✓</span></div>
+      <div class="card-hd-text"><h2>Recommendation &amp; Final Thoughts</h2><p>Your last words — and they matter the most.</p></div>
+    </div>
+    <div class="field">
+      <label class="lbl">How likely are you to recommend this training to a colleague?</label>
+      <span class="hint">0 = not at all likely &nbsp;·&nbsp; 10 = extremely likely</span>
+      <div class="nps-btns" id="npsG">
+        <button class="nb" onclick="setNPS(this,0)"><div class="nb-fill"></div><span class="nb-txt">0</span></button>
+        <button class="nb" onclick="setNPS(this,1)"><div class="nb-fill"></div><span class="nb-txt">1</span></button>
+        <button class="nb" onclick="setNPS(this,2)"><div class="nb-fill"></div><span class="nb-txt">2</span></button>
+        <button class="nb" onclick="setNPS(this,3)"><div class="nb-fill"></div><span class="nb-txt">3</span></button>
+        <button class="nb" onclick="setNPS(this,4)"><div class="nb-fill"></div><span class="nb-txt">4</span></button>
+        <button class="nb" onclick="setNPS(this,5)"><div class="nb-fill"></div><span class="nb-txt">5</span></button>
+        <button class="nb" onclick="setNPS(this,6)"><div class="nb-fill"></div><span class="nb-txt">6</span></button>
+        <button class="nb" onclick="setNPS(this,7)"><div class="nb-fill"></div><span class="nb-txt">7</span></button>
+        <button class="nb" onclick="setNPS(this,8)"><div class="nb-fill"></div><span class="nb-txt">8</span></button>
+        <button class="nb" onclick="setNPS(this,9)"><div class="nb-fill"></div><span class="nb-txt">9</span></button>
+        <button class="nb" onclick="setNPS(this,10)"><div class="nb-fill"></div><span class="nb-txt">10</span></button>
+      </div>
+      <div class="nps-ends"><span class="nps-end">Not likely at all</span><span class="nps-end">Extremely likely</span></div>
+      <div class="nps-caption" id="npsCap"></div>
+    </div>
+    <div class="field"><label class="lbl">Any other comments, suggestions, or feedback?</label><textarea style="min-height:108px" placeholder="Anything about the overall experience — venue, logistics, timing, support, or ideas for future topics…" oninput="cc(this,'cc7')"></textarea><div class="cc" id="cc7">0 characters</div></div>
+  </div>
+
+  <div class="reveal" style="margin-top:8px;transition-delay:.32s">
+    <button class="submit-btn" onclick="doSubmit()">Submit My Feedback →</button>
+    <div class="submit-note">Responses are confidential and used solely to improve training quality at Krish TechnoLabs.</div>
+  </div>
+
+</main>
+
+<div class="main" id="successWrap" style="display:none;padding-top:44px;">
+  <div class="success">
+    <div class="s-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+    <h2>Thank you for your feedback!</h2>
+    <p>Your responses have been submitted. We genuinely appreciate you taking the time — your input directly shapes how we design and deliver future training sessions at Krish TechnoLabs.</p>
+    <div class="s-bar"></div>
+    <div class="s-tag">Submitted to <b>Krish TechnoLabs</b> Training &amp; Enablement</div>
+  </div>
+</div>
+
+<footer>
+  <div class="ft-name">Krish <b>TechnoLabs</b></div>
+  <div class="ft-sub">Training &amp; Enablement · Feedback Portal · © 2025 Krish TechnoLabs. All rights reserved.</div>
+</footer>
+
+<script>
+  /* ── scroll reveal ── */
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+  }), {threshold:0.07});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  const slbls = ['','Poor','Fair','Good','Very good','Excellent'];
+  const npsD  = {0:'Extremely unlikely',1:'Very unlikely',2:'Unlikely',3:'Probably not',4:'Somewhat unlikely',5:'Neutral',6:'Somewhat likely',7:'Likely',8:'Very likely',9:'Almost certain',10:'Extremely likely — Promoter!'};
+  let npsVal = null;
+
+  /* ── pill select ── */
+  function pick(gid, el) {
+    document.querySelectorAll('#'+gid+' .pill').forEach(p => p.classList.remove('on'));
+    el.classList.add('on');
+    sync();
+  }
+
+  /* ── big stars (overall) ── */
+  function setStar(id, v) {
+    const c = document.getElementById(id);
+    c.dataset.v = v;
+    c.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('on', i < v));
+    const l = document.getElementById(id+'Lbl');
+    if(l) l.textContent = slbls[v];
+    sync();
+  }
+  function hvStar(id, v){ document.getElementById(id).querySelectorAll('.star').forEach((s,i) => s.classList.toggle('on', i < v)); }
+  function outStar(id){ const c=document.getElementById(id), v=parseInt(c.dataset.v)||0; c.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('on', i < v)); }
+
+  /* ── mini stars (table ratings) ── */
+  function setMS(id, v) {
+    const c = document.getElementById(id);
+    c.dataset.v = v;
+    c.querySelectorAll('.ms').forEach((s,i) => s.classList.toggle('on', i < v));
+    const r = document.getElementById('rv_'+id);
+    if(r) r.textContent = v+'/5';
+    sync();
+  }
+  function hvMS(id, v){ document.getElementById(id).querySelectorAll('.ms').forEach((s,i) => s.classList.toggle('on', i < v)); }
+  function outMS(id){ const c=document.getElementById(id), v=parseInt(c.dataset.v)||0; c.querySelectorAll('.ms').forEach((s,i) => s.classList.toggle('on', i < v)); }
+
+  /* ── NPS ── */
+  function setNPS(el, v) {
+    document.querySelectorAll('#npsG .nb').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    npsVal = v;
+    const cap = document.getElementById('npsCap');
+    if(cap) cap.textContent = 'Score '+v+' — '+npsD[v];
+    sync();
+  }
+
+  /* ── trainer avatar initials ── */
+  function updateAvatar(name) {
+    const av = document.getElementById('tAv');
+    if(!av) return;
+    const pts = name.trim().split(/\s+/);
+    av.textContent = pts[0] ? (pts.length >= 2 ? (pts[0][0]+pts[pts.length-1][0]).toUpperCase() : pts[0][0].toUpperCase()) : '?';
+  }
+
+  /* ── character counter ── */
+  function cc(el, id){ document.getElementById(id).textContent = el.value.length+' characters'; }
+
+  /* ── progress bar sync ── */
+  function sync() {
+    const ok = [
+      !!(document.getElementById('pName').value.trim() && document.querySelector('#sessionG .on')),
+      !!(parseInt(document.getElementById('oStars').dataset.v) > 0 && document.querySelector('#expectG .on')),
+      !!(document.getElementById('tv').value.trim()),
+      true,
+      !!(document.querySelector('#confG .on')),
+      npsVal !== null
+    ];
+    let done = 0;
+    ok.forEach((v, i) => {
+      const ps   = document.getElementById('ps'+(i+1));
+      const card = document.getElementById('card'+(i+1));
+      ps.classList.remove('done','next');
+      if(v){ done++; ps.classList.add('done'); card && card.classList.add('complete'); }
+      else  { card && card.classList.remove('complete'); }
+    });
+    if(done < 6){ const nx = document.getElementById('ps'+(done+1)); if(nx) nx.classList.add('next'); }
+    const pct = Math.round(done/6*100);
+    document.getElementById('pbarPct').textContent = pct+'%';
+    document.getElementById('pbarLbl').textContent  = done+' of 6 sections done';
+  }
+
+  /* ── collect all form values ── */
+  function collectFormData() {
+    const pill = gid => { const el = document.querySelector('#'+gid+' .on'); return el ? el.textContent.trim() : ''; };
+    const ms   = id  => parseInt(document.getElementById(id).dataset.v) || '';
+    const ta   = i   => { const els = document.querySelectorAll('textarea'); return els[i] ? els[i].value.trim() : ''; };
+    const inp  = i   => { const els = document.querySelectorAll('.fg2 input'); return els[i] ? els[i].value.trim() : ''; };
+
+    return {
+      name:             document.getElementById('pName').value.trim(),
+      organisation:     inp(1),
+      email:            inp(2),
+      role:             inp(3),
+      session:          pill('sessionG'),
+      overallStars:     parseInt(document.getElementById('oStars').dataset.v) || '',
+      metExpectations:  pill('expectG'),
+      pace:             pill('paceG'),
+      c_relevance:      ms('c1'),
+      c_clarity:        ms('c2'),
+      c_materials:      ms('c3'),
+      c_exercises:      ms('c4'),
+      c_balance:        ms('c5'),
+      c_time:           ms('c6'),
+      topicValuable:    ta(0),
+      topicUnclear:     ta(1),
+      topicMissed:      ta(2),
+      trainerName:      document.getElementById('tName').value.trim(),
+      t_knowledge:      ms('t1'),
+      t_explanation:    ms('t2'),
+      t_engagement:     ms('t3'),
+      t_questions:      ms('t4'),
+      t_adapting:       ms('t5'),
+      trainerWell:      ta(3),
+      trainerImprove:   ta(4),
+      confidence:       pill('confG'),
+      firstAction:      ta(5),
+      followUp:         pill('followG'),
+      nps:              npsVal,
+      finalComments:    ta(6)
+    };
+  }
+
+  /* ── Apps Script endpoint ── */
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYsHkpTi_7Z8ZHIeiPVgckh4HaG-D2gFTLJLNTa2fNCgUxYcCTPDi4X-b_tQEddmoDbg/exec';
+
+  /* ── submit ── */
+  function doSubmit() {
+    if(!document.getElementById('pName').value.trim()){ alert('Please enter your name to continue.'); return; }
+    if(!document.querySelector('#sessionG .on'))       { alert('Please select which session(s) you attended.'); return; }
+    if(parseInt(document.getElementById('oStars').dataset.v) < 1){ alert('Please provide an overall satisfaction rating.'); return; }
+
+    const btn = document.querySelector('.submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    fetch(APPS_SCRIPT_URL, {
+      method:  'POST',
+      body:    JSON.stringify(collectFormData())
+    })
+    .then(res => res.json())
+    .then(() => {
+      const mf = document.getElementById('mainForm');
+      mf.style.transition = 'opacity 0.35s ease';
+      mf.style.opacity    = '0';
+      setTimeout(() => {
+        mf.style.display = 'none';
+        document.getElementById('successWrap').style.display = 'block';
+        document.querySelectorAll('.pbar-step').forEach(s => { s.classList.add('done'); s.classList.remove('next'); });
+        document.getElementById('pbarPct').textContent = '100%';
+        document.getElementById('pbarLbl').textContent  = 'All done — thank you!';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 350);
+    })
+    .catch(err => {
+      console.error('Submission error:', err);
+      btn.disabled    = false;
+      btn.textContent = 'Submit My Feedback →';
+      alert('Something went wrong. Please check your connection and try again.');
+    });
+  }
+</script>
+</body>
+</html>
